@@ -459,6 +459,7 @@ local Tabs = {
     Enchant = Window:AddTab({ Title = "เสริมพลัง", Icon = "mountain" }),
     Players = Window:AddTab({ Title = "ผู้เล่น", Icon = "user" }),
     Miscellaneous = Window:AddTab({ Title = "อื่นๆ", Icon = "align-justify" }),
+    Shop = Window:AddTab({ Title = "ร้านค้า", Icon = "shopping-cart" }),
     Fake = Window:AddTab({ Title = "ปลอมแปลง", Icon = "chevrons-up" }),
     Trading = Window:AddTab({ Title = "แลกเปลี่ยน", Icon = "refresh-cw" }),
     Server = Window:AddTab({ Title = "เซิร์ฟเวอร์", Icon = "hard-drive" }),
@@ -1594,6 +1595,126 @@ local Slider = Tabs.Settings:AddSlider("Slider", {
 })
 
 
+
+local section = Tabs.Shop:AddSection("ซื้อคันเบ็ด")  -- แสดงเป็นภาษาไทย
+local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
+    Title = "เลือกคันเบ็ด",  -- แสดงเป็นภาษาไทย
+    Values = { 
+        "Long Rod [4500C$]", 
+        "Fortune Rod [12750C$]", 
+        "Aurora Rod [90000C$]", 
+        "Midas Rod [55000C$]", 
+        "Steady Rod [7000C$]", 
+        "Rod Of The Depths [75000C$]", 
+        "Training Rod [300C$]", 
+        "Phoenix Rod [40000C$]", 
+        "Avalanche Rod [35000C$]", 
+        "Arctic Rod [25000C$]", 
+        "Plastic Rod [900C$]", 
+        "Magnet Rod [15000C$]", 
+        "Rapid Rod [14000C$]", 
+        "Flimsy Rod [0C$]", 
+        "Fast Rod [4500C$]", 
+        "Firework Rod [35000C$]", 
+        "Scurvy Rod [50000C$]", 
+        "Mythical Rod [110000C$]", 
+        "Kings Rod [120000C$]", 
+        "Carbon Rod [2000C$]", 
+        "Summit Rod [300000C$]", 
+        "Heaven's Rod [1750000C$]", 
+        "Ice Warpers Rod [65000C$]", 
+        "Crystalized Rod [35000C$]", 
+        "Destiny Rod [190000C$]", 
+        "Nocturnal Rod [11000C$]", 
+        "Trident Rod [150000C$]", 
+        "Reinforced Rod [20000C$]", 
+        "Stone Rod [3000C$]", 
+        "Lucky Rod [5250C$]"
+    }, 
+    Multi = false,
+    Default = "Long Rod [4500C$]" -- ต้องให้ค่าตรงกับ Values
+})
+
+-- กำหนดค่าเริ่มต้นให้กับตัวเลือก
+Dropdown:SetValue("Long Rod [4500C$]")
+
+-- ฟังก์ชันอัพเดตค่า Dropdown เมื่อมีการเปลี่ยนแปลง
+Dropdown:OnChanged(function(selected)
+    _G.SelectIsland = selected -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
+end)
+
+Tabs.Shop:AddButton({
+    Title = "ซื้อคันเบ็ด",  -- แสดงเป็นภาษาไทย
+    Description = "ซื้อคันเบ็ดที่เลือก",
+    Callback = function()
+        local teleportPositions = {
+            ["Long Rod [4500C$]"] = CFrame.new(482.74, 174.50, 148.02),
+            ["Fortune Rod [12750C$]"] = CFrame.new(-1521.00, 141.48, 769.00),
+            ["Aurora Rod [90000C$]"] = CFrame.new(-144.11, -513.07, 1129.53),
+            ["Steady Rod [7000C$]"] = CFrame.new(-1514.31, 141.53, 761.31),
+            ["Rod Of The Depths [75000C$]"] = CFrame.new(1704.82, -902.53, 1447.85),
+            ["Training Rod [300C$]"] = CFrame.new(457.79, 154.40, 229.98),
+            ["Phoenix Rod [40000C$]"] = CFrame.new(5970.14, 272.33, 852.93),
+            ["Avalanche Rod [35000C$]"] = CFrame.new(19772.00, 415.44, 5418.57),
+            ["Arctic Rod [25000C$]"] = CFrame.new(19578.46, 135.51, 5307.76),
+            ["Plastic Rod [900C$]"] = CFrame.new(453.76, 150.50, 231.05),
+            ["Magnet Rod [15000C$]"] = CFrame.new(-196.00, 132.50, 1931.00),
+            ["Rapid Rod [14000C$]"] = CFrame.new(-1507.88, 141.85, 762.89),
+            ["Flimsy Rod [0C$]"] = CFrame.new(471.40, 153.61, 229.33),
+            ["Fast Rod [4500C$]"] = CFrame.new(447.31, 153.70, 219.57),
+            ["Scurvy Rod [50000C$]"] = CFrame.new(-2827.49, 215.10, 1510.89),
+            ["Kings Rod [120000C$]"] = CFrame.new(1377.49, -807.49, -301.67),
+            ["Carbon Rod [2000C$]"] = CFrame.new(453.76, 153.49, 222.90),
+            ["Summit Rod [300000C$]"] = CFrame.new(20208.63, 739.12, 5711.31),
+            ["Heaven's Rod [1750000C$]"] = CFrame.new(20025.76, -473.59, 7147.43),
+            ["Ice Warpers Rod [65000C$]"] = CFrame.new(19965.33, 589.20, 5551.95),
+            ["Crystalized Rod [35000C$]"] = CFrame.new(19220.90, 395.87, 6058.30),
+            ["Destiny Rod [190000C$]"] = CFrame.new(979.71, 131.32, -1235.08),
+            ["Nocturnal Rod [11000C$]"] = CFrame.new(-143.80, -515.30, 1143.04),
+            ["Trident Rod [150000C$]"] = CFrame.new(-1484.65, -223.49, -2195.60),
+            ["Reinforced Rod [20000C$]"] = CFrame.new(-991.44, -244.73, -2689.97),
+            ["Stone Rod [3000C$]"] = CFrame.new(5502.51, 146.77, -313.90),
+            ["Lucky Rod [5250C$]"] = CFrame.new(445.53, 152.93, 221.11),
+        }
+    if _G.SelectIsland then
+            local targetPosition = teleportPositions[_G.SelectIsland]
+            if targetPosition then
+                -- เก็บตำแหน่งปัจจุบันก่อนวาร์ป
+                local currentPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+                -- วาร์ปไปยังตำแหน่งที่เลือก
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = targetPosition
+                
+                -- หน่วงเวลาเพื่อให้ตัวละครโหลดก่อนกดปุ่ม E
+                task.wait(1) -- รอ 1 วินาที
+
+                -- จำลองการกดปุ่ม "E"
+                game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
+                task.wait(0.5) -- รอเล็กน้อย
+                game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
+
+                -- ตรวจสอบ UI และกดปุ่มยืนยันถ้ามี
+                task.wait(0.5) -- รอให้ UI ปรากฏ
+                local playerGui = game:GetService("Players").LocalPlayer.PlayerGui
+                if playerGui:FindFirstChild("over") and playerGui.over:FindFirstChild("prompt") then
+                    local prompt = playerGui.over.prompt
+                    if prompt:FindFirstChild("confirm") then
+                        -- เรียกใช้งานปุ่มยืนยัน
+                        for _, connection in pairs(getconnections(prompt.confirm.MouseButton1Click)) do
+                            if connection.Function then
+                                connection.Function()
+
+                                -- วาร์ปกลับไปยังตำแหน่งเดิม
+                                task.wait(0.5) -- รอให้การซื้อสำเร็จก่อนวาร์ปกลับ
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPosition
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
 
 
 
