@@ -457,6 +457,7 @@ local Tabs = {
     Farm = Window:AddTab({ Title = "ฟาร์ม", Icon = "gem" }),
     Event = Window:AddTab({ Title = "กิจกรรม", Icon = "fan" }),
     Enchant = Window:AddTab({ Title = "เสริมพลัง", Icon = "mountain" }),
+    file = Window:AddTab({ Title = "เทเลพอร์ตไปยังไฟล์", Icon = "file" }),  -- แสดงเป็นภาษาไทย
     Players = Window:AddTab({ Title = "ผู้เล่น", Icon = "user" }),
     Miscellaneous = Window:AddTab({ Title = "อื่นๆ", Icon = "align-justify" }),
     Shop = Window:AddTab({ Title = "ร้านค้า", Icon = "shopping-cart" }),
@@ -1595,8 +1596,8 @@ local Slider = Tabs.Settings:AddSlider("Slider", {
 })
 
 
-
 local section = Tabs.Shop:AddSection("ซื้อคันเบ็ด")  -- แสดงเป็นภาษาไทย
+
 local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
     Title = "Selector Rods",
     Values = { 
@@ -1631,7 +1632,6 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
     Multi = false,
     Default = "Long Rod [4500C$]" -- ต้องให้ค่าตรงกับ Values
 })
-
 -- กำหนดค่าเริ่มต้นให้กับตัวเลือก
 Dropdown:SetValue("Long Rod [4500C$]")
 
@@ -1713,6 +1713,84 @@ Tabs.Shop:AddButton({
     end
 })
 
+local SavedPositions = {}
+
+-- ช่องป้อนชื่อไฟล์
+local FileInput = Tabs.file:AddInput("FileNameInput", {
+    Title = "ป้อนชื่อไฟล์",  -- แสดงเป็นภาษาไทย
+    Default = "",
+    Placeholder = "พิมพ์ที่นี่...",
+    Numeric = false,
+    Finished = true -- กด Enter เพื่อบันทึกค่า
+})
+
+-- เมนูแบบดรอปดาวน์สำหรับเลือกไฟล์
+local Dropdown = Tabs.file:AddDropdown("FileDropdown", {
+    Title = "เลือกไฟล์",  -- แสดงเป็นภาษาไทย
+    Values = {},
+    Multi = false,
+    Default = nil
+})
+
+-- ฟังก์ชันอัปเดตรายการไฟล์ใน Dropdown
+local function updateDropdown()
+    local fileNames = {}
+    for name, _ in pairs(SavedPositions) do
+        table.insert(fileNames, name)
+    end
+    Dropdown:SetValues(fileNames)
+end
+
+-- เพิ่มชื่อไฟล์ใหม่เมื่อกด Enter
+FileInput:OnChanged(function(Value)
+    if Value and Value ~= "" and not SavedPositions[Value] then
+        SavedPositions[Value] = {x = 0, y = 0, z = 0}
+        updateDropdown()
+    end
+end)
+
+-- ปุ่มบันทึกตำแหน่งปัจจุบัน
+Tabs.file:AddButton({
+    Title = "บันทึกตำแหน่ง",  -- แสดงเป็นภาษาไทย
+    Callback = function()
+        local selectedFile = Dropdown.Value
+        if selectedFile and SavedPositions[selectedFile] then
+            local character = game.Players.LocalPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local pos = character.HumanoidRootPart.Position
+                SavedPositions[selectedFile] = {x = pos.X, y = pos.Y, z = pos.Z}
+            end
+        end
+    end
+})
+
+-- ปุ่มเทเลพอร์ตไปยังตำแหน่งที่บันทึกไว้
+Tabs.file:AddButton({
+    Title = "เทเลพอร์ต",  -- แสดงเป็นภาษาไทย
+    Callback = function()
+        local selectedFile = Dropdown.Value
+        if selectedFile and SavedPositions[selectedFile] then
+            local position = SavedPositions[selectedFile]
+            local character = game.Players.LocalPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = CFrame.new(position.x, position.y, position.z)
+            end
+        end
+    end
+})
+
+-- ปุ่มลบไฟล์ที่เลือกออกจากรายการ
+Tabs.file:AddButton({
+    Title = "ลบไฟล์ทั้งหมด",  -- แสดงเป็นภาษาไทย
+    Callback = function()
+        local selectedFile = Dropdown.Value
+        if selectedFile and SavedPositions[selectedFile] then
+            SavedPositions[selectedFile] = nil -- ลบไฟล์ที่เลือกจากตาราง
+            updateDropdown() -- อัปเดตรายการดรอปดาวน์
+            Dropdown:SetValue(nil) -- ล้างค่าใน Dropdown
+        end
+    end
+})
 
 
 
