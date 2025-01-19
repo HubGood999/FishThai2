@@ -1598,12 +1598,11 @@ local Slider = Tabs.Settings:AddSlider("Slider", {
 
 local section = Tabs.Shop:AddSection("ซื้อคันเบ็ด")  -- แสดงเป็นภาษาไทย
 local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
-    Title = "เลือกคันเบ็ด",  -- แสดงเป็นภาษาไทย
+    Title = "Selector Rods",
     Values = { 
         "Long Rod [4500C$]", 
         "Fortune Rod [12750C$]", 
         "Aurora Rod [90000C$]", 
-        "Midas Rod [55000C$]", 
         "Steady Rod [7000C$]", 
         "Rod Of The Depths [75000C$]", 
         "Training Rod [300C$]", 
@@ -1615,9 +1614,7 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
         "Rapid Rod [14000C$]", 
         "Flimsy Rod [0C$]", 
         "Fast Rod [4500C$]", 
-        "Firework Rod [35000C$]", 
         "Scurvy Rod [50000C$]", 
-        "Mythical Rod [110000C$]", 
         "Kings Rod [120000C$]", 
         "Carbon Rod [2000C$]", 
         "Summit Rod [300000C$]", 
