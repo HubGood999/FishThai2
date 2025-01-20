@@ -2,11 +2,12 @@
 
 
 
+
+
+
 setfpscap(1)
 wait(5)
 setfpscap(999)
-
-
 
 --//---//----//---//---//----//---//---//----//---//---//----//---//---//----//
 --// XXX Hub by XXX --//
@@ -435,302 +436,288 @@ end)
 
 
 
----//---//----//---//---//----//---//---//----//---//---//----//---//---//----//
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "XXX hub [FREE]",
-    SubTitle = "by 999",
+    Title = "XXX ฮับ [ฟรี] ( ให้กู้เกิลเเปร )",
+    SubTitle = "โดย 999",
     TabWidth = 160,
     Size = UDim2.fromOffset(555, 355),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Acrylic = true, -- เอฟเฟกต์เบลออาจถูกตรวจพบ, ตั้งเป็น false เพื่อปิดการเบลอทั้งหมด
     Theme = "Values",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.LeftControl -- ใช้เมื่อไม่มีคีย์ลัดย่อหน้าจอ
 })
 
---Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
+-- Fluent รองรับไอคอน Lucide https://lucide.dev/icons/ สำหรับแท็บ, ไอคอนเป็นตัวเลือก
 local Tabs = {
-    AutoFishing = Window:AddTab({ Title = "Auto Fishing", Icon = "home" }),
-    Farm = Window:AddTab({ Title = "Farm", Icon = "gem" }),
-    Event = Window:AddTab({ Title = "Event", Icon = "fan" }),
-    Enchant = Window:AddTab({ Title = "Enchant", Icon = "mountain" }),
-    file = Window:AddTab({ Title = "Teleport to File", Icon = "file" }),
-    Players = Window:AddTab({ Title = "Players", Icon = "user" }),
-    Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "align-justify" }),
-    Shop = Window:AddTab({ Title = "Shop", Icon = "shopping-cart" }),
-    Fake = Window:AddTab({ Title = "Fake", Icon = "chevrons-up" }),
-    Trading = Window:AddTab({ Title = "Trading", Icon = "refresh-cw" }),
-    Server = Window:AddTab({ Title = "Server", Icon = "hard-drive" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    AutoFishing = Window:AddTab({ Title = "ตกปลาอัตโนมัติ", Icon = "home" }),
+    Farm = Window:AddTab({ Title = "ฟาร์ม", Icon = "gem" }),
+    Event = Window:AddTab({ Title = "กิจกรรม", Icon = "fan" }),
+    Enchant = Window:AddTab({ Title = "เสริมพลัง", Icon = "mountain" }),
+    file = Window:AddTab({ Title = "เทเลพอร์ตไปยังไฟล์", Icon = "file" }),  -- แสดงเป็นภาษาไทย
+    Players = Window:AddTab({ Title = "ผู้เล่น", Icon = "user" }),
+    Miscellaneous = Window:AddTab({ Title = "อื่นๆ", Icon = "align-justify" }),
+    Shop = Window:AddTab({ Title = "ร้านค้า", Icon = "shopping-cart" }),
+    Fake = Window:AddTab({ Title = "ปลอมแปลง", Icon = "chevrons-up" }),
+    Trading = Window:AddTab({ Title = "แลกเปลี่ยน", Icon = "refresh-cw" }),
+    Server = Window:AddTab({ Title = "เซิร์ฟเวอร์", Icon = "hard-drive" }),
+    Settings = Window:AddTab({ Title = "การตั้งค่า", Icon = "settings" })
 }
 
-  local section = Tabs.AutoFishing:AddSection("Fishing Bot")
-  local section = Tabs.Farm:AddSection("Level Farm")
-  local section = Tabs.Players:AddSection("Movement")
-  local section = Tabs.Fake:AddSection("FakeUp")  
-  local section = Tabs.Miscellaneous:AddSection("Misc")
-  local section = Tabs.Server:AddSection("Server")
-  local section = Tabs.Trading:AddSection("Trading Options")
+-- เพิ่มส่วนในแท็บต่างๆ
+local section = Tabs.AutoFishing:AddSection("บอทตกปลา")
+local section = Tabs.Farm:AddSection("ฟาร์มเลเวล")
+local section = Tabs.Players:AddSection("การเคลื่อนที่")
+local section = Tabs.Fake:AddSection("ฟังก์ชันปลอม")
+local section = Tabs.Miscellaneous:AddSection("อื่นๆ")
+local section = Tabs.Server:AddSection("เซิร์ฟเวอร์")
+local section = Tabs.Trading:AddSection("ตัวเลือกการแลกเปลี่ยน")
 
 local Options = Fluent.Options
 
-do
+-- ตั้งค่าการตกปลาอัตโนมัติ
 local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "Auto Fishing", 
-    Default = false, 
-    Description = "Automatically fish for you."  -- Adding description to the toggle
+    Title = "ตกปลาอัตโนมัติ",
+    Default = false,
+    Description = "ช่วยคุณตกปลาโดยอัตโนมัติ"
 })
 
 Toggle:OnChanged(function()
     _G.Tool1234 = Toggle.Value
 
-    if _G.Tool1234  then
+    if _G.Tool1234 then
         task.spawn(function()
-            while _G.Tool1234  do
-                task.wait(0)  -- Added a small delay to reduce unnecessary checks
+            while _G.Tool1234 do
+                task.wait(0)  -- หน่วงเวลาเล็กน้อยเพื่อป้องกันการทำงานมากเกินไป
 
+                local player = game:GetService("Players").LocalPlayer
+                local backpack = player.Backpack
 
-          local player = game:GetService("Players").LocalPlayer
-local backpack = player.Backpack
+                -- ตรวจสอบเครื่องมือตกปลาจากกระเป๋า
+                for _, item in pairs(backpack:GetChildren()) do
+                    if item:IsA("Tool") and string.find(item.Name, "Rod") then
+                        if item.Name ~= "Crab Cage" then
+                            local humanoid = player.Character:WaitForChild("Humanoid")
+                            humanoid:EquipTool(item)  -- ใช้งานคันเบ็ดที่พบ
+                            break
+                        end
+                    end
+                end
 
--- Check for tools in the player's backpack
-for _, item in pairs(backpack:GetChildren()) do
-    if item:IsA("Tool") and string.find(item.Name, "Rod") then
-        -- Ensure the item is not "Crab Cage" before equipping
-        if item.Name ~= "Crab Cage" then
-            local humanoid = player.Character:WaitForChild("Humanoid")
-            humanoid:EquipTool(item)  -- Equip the rod item
-            break  -- Stop searching after finding the first match
-        end
-    end
-end
+                -- ตรวจสอบเครื่องมือตกปลาที่ติดตัวอยู่
+                local rodItem = nil
+                for _, item in pairs(player.Character:GetChildren()) do
+                    if item:IsA("Tool") and string.find(item.Name, "Rod") then
+                        if item.Name ~= "Crab Cage" then
+                            rodItem = item
+                            break
+                        end
+                    end
+                end
 
--- Check for tools in the player's character (not workspace.D3B3XxX)
-local rodItem = nil
-for _, item in pairs(player.Character:GetChildren()) do
-    if item:IsA("Tool") and string.find(item.Name, "Rod") then
-        -- Ensure the item is not "Crab Cage" before equipping
-        if item.Name ~= "Crab Cage" then
-            rodItem = item  -- Found the rod in the character, not the "Crab Cage"
-            break  -- Stop searching after finding the first match
-        end
-    end
-end
+                -- หากพบคันเบ็ด เรียกใช้ฟังก์ชัน cast
+                if rodItem then
+                    local events = rodItem:FindFirstChild("events")
+                    if events and events:FindFirstChild("cast") then
+                        local args = {
+                            [1] = 99999999999999,
+                            [2] = 1
+                        }
+                        events.cast:FireServer(unpack(args))
+                    end
+                end
 
--- If a "Rod" item is found in the player's character, trigger the cast event
-if rodItem then
-    local events = rodItem:FindFirstChild("events")
-    if events and events:FindFirstChild("cast") then
-        -- Fire the cast event with arguments
-        local args = {
-            [1] = 99999999999999,
-            [2] = 1
-        }
-        events.cast:FireServer(unpack(args))
-    end
-end
-
-task.wait(0)  -- Add delay to prevent overloading the server
-
+                task.wait(0)
             end
         end)
     end
 end)
 
-            end
-local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "Auto Use Bait", 
-    Default = false, 
-    Description = "Automatically use vait when fishing."  -- Adding description to the toggle
-})
-    Toggle:OnChanged(function()
- 
-    end)
-    
 
-      local MultiDropdown = Tabs.AutoFishing:AddDropdown("MultiDropdown", {
+
+                local Dropdown = Tabs.AutoFishing:AddDropdown("Dropdown", {
         Title = "Select Bait",
-        Description = "",
         Values = {"Magnet", "Worm", "Peppermint Worm", "Coal", "Squid", "Shrimp", "Insect", "Give", "Night Shrimp", "Deep Coral", "Super Flakes", "Swaweed", "Instant", "Shark Head", "Fish Head", "Weird Algae", "Garbage",  "Holly Berry", "Rapid Catcher", "Minnow", "Coral", "Flakes", "Aurora Bait", "Bagel", "Truffle Worm"},
-        Multi = true,
-        Default = {"seven", "twelve"},
+        Multi = false,
+        Default = 1,
     })
 
-    MultiDropdown:SetValue({
-        three = true,
-        five = true,
-        seven = false
-    })
+    Dropdown:OnChanged(function(Value)
+        _G.Bait =  Value
+    end)
+local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
+    Title = "ใช้เหยื่ออัตโนมัติ",
+    Default = false,
+    Description = "ใช้เหยื่อให้อัตโนมัติขณะตกปลา"
+})
+    Toggle:OnChanged(function(V)
+    _G.Bait_X = V
+spawn(function()
+    while task.wait(0.5) do
+        pcall(function()
+        if _G.Bait_X then
 
-    MultiDropdown:OnChanged(function(Value)
-        local Values = {}
-        for Value, State in next, Value do
-            table.insert(Values, Value)
-        end
+             local ohString1 = _G.Bait
+
+game:GetService("ReplicatedStorage").packages.Net["RE/Bait/Equip"]:FireServer(ohString1)
+           end
+        end)
+    end
+end)
+
+    
     end)
 
+-- การตั้งค่าการเขย่าคันเบ็ดอัตโนมัติ
 local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "Auto FastShake", 
-    Default = false, 
-    Description = "Automatically FastShake the rod."
+    Title = "เขย่าคันเบ็ดเร็วอัตโนมัติ",
+    Default = false,
+    Description = "เขย่าคันเบ็ดอย่างรวดเร็วอัตโนมัติ"
 })
 
 Toggle:OnChanged(function(se)
     _G.FastShake = se
-if not _G.FastShake then
-    _G.FastShake = false
-end
-
--- ฟังก์ชันหลักที่ทำงานตลอดเวลา
-task.spawn(function()
-    while true do
-        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
-
-        -- ถ้าค่า _G.FastShake เป็น true ให้ทำงาน
-        if _G.FastShake then
-            -- ลูปเพื่อจำลองการคลิกปุ่ม 10,000 ครั้ง
-            for i = 1, 3 do
-                -- เลือกผู้เล่นและ GUI ที่เกี่ยวข้อง
-                local player = game.Players.LocalPlayer
-                local GUI = player:WaitForChild("PlayerGui")
-                local shakeui = GUI:WaitForChild("shakeui")
-                local VirtualInputManager = game:GetService("VirtualInputManager")
-                local button = shakeui.safezone:FindFirstChild("button")
-
-                -- ถ้าปุ่มอยู่และเป็น ImageButton, จำลองการคลิก
-                if button and button:IsA("ImageButton") then
-                    -- เลือกปุ่มและจำลองการคลิก
-                    game:GetService("GuiService").SelectedCoreObject = button
-                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                end
-            end
-        end
+    if not _G.FastShake then
+        _G.FastShake = false
     end
-end)
-end)
 
+    -- ฟังก์ชันหลักที่ทำงานตลอดเวลา
+    task.spawn(function()
+        while true do
+            task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
 
-local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "Auto Shake", 
-    Default = true, 
-    Description = "Automatically Shake the rod."
-})
-
-Toggle:OnChanged(function(value)
-    _G.Autoshake = value
-
-
-if not _G.Autoshake then
-    _G.Autoshake = false
-end
-
--- ฟังก์ชันหลักที่ทำงานตลอดเวลา
-task.spawn(function()
-    while true do
-        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
-
-        -- ถ้าค่า _G.FastShake เป็น true ให้ทำงาน
-        if _G.Autoshake then
-            -- ลูปเพื่อจำลองการคลิกปุ่ม 10,000 ครั้ง
+            if _G.FastShake then
+                -- ลูปการกดปุ่ม 3 ครั้งเพื่อเร่งกระบวนการ
+                for i = 1, 3 do
                     local player = game.Players.LocalPlayer
                     local GUI = player:WaitForChild("PlayerGui")
                     local shakeui = GUI:WaitForChild("shakeui")
                     local VirtualInputManager = game:GetService("VirtualInputManager")
-
-                    -- Locate the button and interact with it
                     local button = shakeui.safezone:FindFirstChild("button")
-                    if button and button:IsA("ImageButton") and button.Visible then
+
+                    -- หากปุ่มอยู่และเป็นปุ่มที่ถูกต้อง ให้กดปุ่ม
+                    if button and button:IsA("ImageButton") then
                         game:GetService("GuiService").SelectedCoreObject = button
                         VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                         VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
                     end
                 end
             end
-        end)
-    end)
-    
-
-
-
-
-
-
-local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "Auto Reel", 
-    Default = false, 
-    Description = "Automatically finish the fishinf process."  -- Adding description to the toggle
-})
-    Toggle:OnChanged(function()
-_G.AutoReel1 = Toggle.Value
-_G.AutoReel2 = Toggle.Value
-
-   if _G.AutoReel1 then
-            task.spawn(function()
-                while _G.AutoReel1 do
-                    task.wait(0)
-                    local reelfinished = game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished")
-                    local LocalPlayer = game.Players.LocalPlayer
-
-                    for _, v in pairs(LocalPlayer.PlayerGui:GetChildren()) do
-                        if v:IsA("ScreenGui") and v.Name == "reel" then
-                            if v:FindFirstChild("bar") then
-                                reelfinished:FireServer(100, true)
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-
-        -- Auto Reel 2 logic
-        if _G.AutoReel2 then
-            task.spawn(function()
-                while _G.AutoReel2 do
-                    task.wait(0)
-                    local reelfinished = game:GetService("ReplicatedStorage").Link.events.reelfinished
-                    local LocalPlayer = game.Players.LocalPlayer
-
-                    for _, v in pairs(LocalPlayer.PlayerGui:GetChildren()) do
-                        if v:IsA("ScreenGui") and v.Name == "reel" then
-                            if v:FindFirstChild("bar") then
-                                reelfinished:FireServer(100, true)
-                            end
-                        end
-                    end
-                end
-            end)
         end
     end)
-    
+end)
 local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "AutoReelSafe", 
+    Title = "เขย่าอัตโนมัติ", 
     Default = true, 
-    Description = "Automatically finish the fishinf process [Safe]."  -- Adding description to the toggle
+    Description = "เขย่าคันเบ็ดอัตโนมัติ"
+})
+
+Toggle:OnChanged(function(value)
+    _G.Autoshake = value
+
+    if not _G.Autoshake then
+        _G.Autoshake = false
+    end
+
+    -- ฟังก์ชันที่ทำงานตลอดเวลา
+    task.spawn(function()
+        while true do
+            task.wait(0)  -- หยุดรอเล็กน้อยเพื่อลดภาระระบบ
+
+            -- ถ้าตัวแปร _G.Autoshake เป็นจริง ให้ทำงาน
+            if _G.Autoshake then
+                local player = game.Players.LocalPlayer
+                local GUI = player:WaitForChild("PlayerGui")
+                local shakeui = GUI:WaitForChild("shakeui")
+                local VirtualInputManager = game:GetService("VirtualInputManager")
+
+                -- หาปุ่มและคลิกปุ่ม
+                local button = shakeui.safezone:FindFirstChild("button")
+                if button and button:IsA("ImageButton") and button.Visible then
+                    game:GetService("GuiService").SelectedCoreObject = button
+                    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                end
+            end
+        end
+    end)
+end)
+
+local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
+    Title = "รีลอัตโนมัติ", 
+    Default = false, 
+    Description = "จบกระบวนการตกปลาโดยอัตโนมัติ"
+})
+
+Toggle:OnChanged(function()
+    _G.AutoReel1 = Toggle.Value
+    _G.AutoReel2 = Toggle.Value
+
+    if _G.AutoReel1 then
+        task.spawn(function()
+            while _G.AutoReel1 do
+                task.wait(0)
+                local reelfinished = game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished")
+                local LocalPlayer = game.Players.LocalPlayer
+
+                for _, v in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+                    if v:IsA("ScreenGui") and v.Name == "reel" then
+                        if v:FindFirstChild("bar") then
+                            reelfinished:FireServer(100, true)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+
+    -- รีลอัตโนมัติแบบที่ 2
+    if _G.AutoReel2 then
+        task.spawn(function()
+            while _G.AutoReel2 do
+                task.wait(0)
+                local reelfinished = game:GetService("ReplicatedStorage").Link.events.reelfinished
+                local LocalPlayer = game.Players.LocalPlayer
+
+                for _, v in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+                    if v:IsA("ScreenGui") and v.Name == "reel" then
+                        if v:FindFirstChild("bar") then
+                            reelfinished:FireServer(100, true)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
+    Title = "รีลอัตโนมัติ (ปลอดภัย)", 
+    Default = true, 
+    Description = "จบกระบวนการตกปลาอัตโนมัติแบบปลอดภัย"
 })
 
 Toggle:OnChanged(function()
     _G.AutoReel3 = Toggle.Value
-    
+
     if _G.AutoReel3 then
         task.spawn(function()
             while _G.AutoReel3 do
-                task.wait(0)  -- Adding a slight delay to prevent overloading the system
-                
+                task.wait(0)
+
                 local player = game:GetService("Players").LocalPlayer
                 local playerGui = player:FindFirstChild("PlayerGui")
-                
-                -- Check if playerGui, reel, bar, and playerbar exist
+
                 if playerGui and playerGui:FindFirstChild("reel") and 
                    playerGui.reel:FindFirstChild("bar") and 
                    playerGui.reel.bar:FindFirstChild("playerbar") then
-                   
+
                     local playerBar = playerGui.reel.bar.playerbar
                     local fish = playerGui.reel.bar:FindFirstChild("fish")
-                    
-                    -- Check if fish exists before changing the position
+
                     if fish then
                         playerBar.Position = fish.Position
                     end
@@ -740,47 +727,45 @@ Toggle:OnChanged(function()
     end
 end)
 
-  local section = Tabs.AutoFishing:AddSection("Fishing Positions")
--- สร้าง Paragraph
+-- เพิ่มส่วนสำหรับแสดงตำแหน่ง
+local section = Tabs.AutoFishing:AddSection("ตำแหน่งตกปลา")
+
+-- เพิ่ม Paragraph แสดงตำแหน่ง XYZ
 local paragraph = Tabs.AutoFishing:AddParagraph({
-    Title = "X Y Z: Initializing...",
+    Title = "ตำแหน่ง X Y Z: รอการอัพเดต...",
     Content = ""
 })
 
--- ฟังก์ชันอัพเดตตำแหน่ง xyz
+-- ฟังก์ชันอัพเดตตำแหน่ง
 local function updateLevel()
-    local player = game.Players.LocalPlayer -- รับข้อมูลผู้เล่นที่รันสคริปต์
-    local character = player.Character or player.CharacterAdded:Wait() -- รับตัวละครของผู้เล่น
-    
-    -- ใช้ pcall เพื่อป้องกันข้อผิดพลาด
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
     pcall(function()
         while true do
-            -- ตรวจสอบว่าตัวละครมี HumanoidRootPart หรือไม่
             if character:FindFirstChild("HumanoidRootPart") then
-                local position = character.HumanoidRootPart.Position -- ตำแหน่งของ HumanoidRootPart
-                local x, y, z = math.floor(position.X), math.floor(position.Y), math.floor(position.Z) -- ปัดตำแหน่งเป็นตัวเลขเต็ม
-                paragraph:SetTitle("X Y Z : " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)) -- อัพเดต Title
+                local position = character.HumanoidRootPart.Position
+                local x, y, z = math.floor(position.X), math.floor(position.Y), math.floor(position.Z)
+                paragraph:SetTitle("ตำแหน่ง X Y Z : " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z))
             else
-                paragraph:SetTitle("xyz: Waiting for position...") -- กรณีที่ยังไม่มีตำแหน่ง
+                paragraph:SetTitle("ตำแหน่ง X Y Z: กำลังรอข้อมูล...")
             end
-            task.wait(0) -- อัพเดตทุก 0.5 วินาที
+            task.wait(0)
         end
     end)
 end
 
--- เรียกใช้งานฟังก์ชันอัพเดต
-task.spawn(updateLevel) -- แก้ไขให้ task.spawn เรียกใช้ฟังก์ชันโดยไม่ใส่วงเล็บ
+task.spawn(updateLevel)
 
+local targetPosition = nil
+local targetOrientation = CFrame.new()
+local shouldStop = false
 
-local targetPosition = nil -- ตัวแปรสำหรับเก็บตำแหน่ง
-local targetOrientation = CFrame.new() -- ตัวแปรสำหรับเก็บทิศทาง (ค่าเริ่มต้นเป็น CFrame ว่าง)
-local shouldStop = false -- ใช้ควบคุมการวาร์ป
-
--- Toggle สำหรับการวาร์ป
+-- ปุ่มสลับเปิด/ปิด การวาร์ปไปยังตำแหน่งที่บันทึก
 local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
-    Title = "Teleport To Position",
+    Title = "วาร์ปไปยังตำแหน่ง",
     Default = false,
-    Description = "Automatically teleport to your saved position." -- เพิ่มคำอธิบาย
+    Description = "วาร์ปไปยังตำแหน่งที่บันทึกไว้โดยอัตโนมัติ"
 })
 
 Toggle:OnChanged(function(state)
@@ -789,12 +774,11 @@ Toggle:OnChanged(function(state)
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
     if not humanoidRootPart then
-        warn("HumanoidRootPart not found!")
+        warn("ไม่พบ HumanoidRootPart!")
         return
     end
 
     if state then
-        -- ถ้า Toggle เปิด
         if targetPosition then
             shouldStop = false
             while not shouldStop do
@@ -803,15 +787,14 @@ Toggle:OnChanged(function(state)
             end
         end
     else
-        -- ถ้า Toggle ปิด
         shouldStop = true
     end
 end)
 
--- ปุ่มสำหรับตั้งค่าตำแหน่งและทิศทาง
+-- ปุ่มตั้งค่าตำแหน่งตกปลา
 Tabs.AutoFishing:AddButton({
-    Title = "Set Fishing Position and Direction",
-    Description = "Set your new fishing position and direction",
+    Title = "ตั้งค่าตำแหน่งตกปลา",
+    Description = "ตั้งค่าตำแหน่งและทิศทางใหม่",
     Callback = function()
         local player = game.Players.LocalPlayer
         local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
@@ -820,39 +803,29 @@ Tabs.AutoFishing:AddButton({
             return
         end
 
-        -- เก็บตำแหน่งปัจจุบัน
         local position = humanoidRootPart.Position
         local x, y, z = position.X, position.Y, position.Z
 
-        -- ตรวจสอบว่าค่าทั้งหมดไม่เป็น nil
         if not x or not y or not z then
             return
         end
 
-        -- เก็บทิศทางปัจจุบัน (Rotation)
         local rx, ry, rz = humanoidRootPart.CFrame:ToEulerAnglesYXZ()
 
-        -- บันทึกค่าที่เก็บไว้ในตัวแปร
         targetPosition = Vector3.new(x, y, z)
         targetOrientation = CFrame.Angles(rx, ry, rz)
 
-        -- คัดลอกข้อมูลตำแหน่งไปยังคลิปบอร์ด
-        local positionString = string.format("Position: %.2f, %.2f, %.2f", x, y, z)
+        local positionString = string.format("ตำแหน่ง: %.2f, %.2f, %.2f", x, y, z)
         setclipboard(positionString)
     end
 })
-
-
--- สร้าง Paragraph
-
-
--- สร้าง Toggle
+-- สร้างปุ่มเปิด/ปิดฟังก์ชันฟาร์มเลเวลอัตโนมัติ
 local Toggle = Tabs.Farm:AddToggle("MyToggle", {
-    Title = "AutoLevelFarm", 
+    Title = "ฟาร์มเลเวลอัตโนมัติ", 
     Default = false, 
-    Description = "Auto Level Farm."
+    Description = "ฟาร์มเลเวลโดยอัตโนมัติ"
 })
-local ScreenGui -- ตัวแปรที่จะเก็บ UI
+local ScreenGui -- ตัวแปรเก็บ UI
 
 Toggle:OnChanged(function(state)
     -- เปิดหรือปิดการทำงานตามค่าของ state
@@ -860,7 +833,6 @@ Toggle:OnChanged(function(state)
     _G.Tool1 = state
     _G.Autoprompt = state
     _G.worldPivot = state
-    _G.indexV2 = state
     _G.indexV2 = false
 
     if state then
@@ -868,116 +840,76 @@ Toggle:OnChanged(function(state)
         task.spawn(function()
             while _G.index do
                 task.wait(0.1)
-                -- โค้ดสำหรับการจัดการ `_G.index`
-
-            end
-        end)
-
-        task.spawn(function()
-            while _G.indexV2 do 
-                task.wait(0.1)
-                -- โค้ดสำหรับการจัดการ `_G.indexV2`
-
             end
         end)
 
         task.spawn(function()
             while _G.Tool1 do 
                 task.wait(0.1)
-                -- โค้ดสำหรับการจัดการ `_G.ToolCrab`
-
             end
         end)
 
-        task.spawn(function()
-            while _G.Autoprompt do
-                task.wait(0.1)
-                -- โค้ดสำหรับการจัดการ `_G.Autoprompt`
-
-            end
-        end)
-
-        task.spawn(function()
-            while _G.worldPivot do
-                task.wait(0.1)
-                -- โค้ดสำหรับการจัดการ `_G.worldPivot`
-
-            end
-        end)
-
-        -- สร้าง UI เมื่อ Toggle เปิด
+        -- สร้าง UI เมื่อเปิด Toggle
         ScreenGui = Instance.new("ScreenGui")
         ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
 
-        -- สร้าง Frame
+        -- สร้างกรอบ UI
         local Frame = Instance.new("Frame")
-        Frame.Size = UDim2.new(0, 400, 0, 200)  -- ขนาดของกรอบ
-        Frame.Position = UDim2.new(0.5, -200, 0.5, -100)  -- ตำแหน่งของกรอบ
-        Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- สีพื้นหลัง
-        Frame.BackgroundTransparency = 1  -- ความโปร่งใส
+        Frame.Size = UDim2.new(0, 400, 0, 200)
+        Frame.Position = UDim2.new(0.5, -200, 0.5, -100)
+        Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        Frame.BackgroundTransparency = 1
         Frame.Parent = ScreenGui
 
-        -- เพิ่ม UICorner เพื่อทำมุมโค้งให้กับ Frame
+        -- เพิ่มมุมโค้งให้กับกรอบ
         local UICorner = Instance.new("UICorner")
-        UICorner.CornerRadius = UDim.new(0, 15)  -- มุมโค้ง
+        UICorner.CornerRadius = UDim.new(0, 15)
         UICorner.Parent = Frame
 
-        -- สร้าง TextLabel ที่แสดงตัวอักษร  
+        -- สร้างข้อความแจ้งเตือน
         local TextLabel = Instance.new("TextLabel")
-        TextLabel.Size = UDim2.new(0, 200, 0, 50)  -- ขนาดของข้อความ
-        TextLabel.Position = UDim2.new(0.5, -100, 0, 0)  -- ตำแหน่งของข้อความ (อยู่ด้านบนสุด)
-        TextLabel.BackgroundTransparency = 1  -- ทำให้พื้นหลังโปร่งใส
-        TextLabel.Text = "🟢 star : Level Farm"  -- ข้อความที่จะแสดง (ตัวอักษร)
-        TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)  -- สีข้อความ
-        TextLabel.TextSize = 20  -- ขนาดข้อความที่เล็กลง
+        TextLabel.Size = UDim2.new(0, 200, 0, 50)
+        TextLabel.Position = UDim2.new(0.5, -100, 0, 0)
+        TextLabel.BackgroundTransparency = 1
+        TextLabel.Text = "🟢 กำลังฟาร์มเลเวล..."
+        TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+        TextLabel.TextSize = 20
         TextLabel.Parent = Frame
 
-    else  -- ถ้า Toggle ปิด
-        -- ลบ UI ถ้า Toggle ปิด
+    else  -- หาก Toggle ปิด
+        -- ลบ UI เมื่อปิด
         if ScreenGui then
-            ScreenGui:Destroy()  -- ลบ ScreenGui ถ้ามี
-            ScreenGui = nil  -- รีเซ็ตตัวแปร ScreenGui
+            ScreenGui:Destroy()
+            ScreenGui = nil
         end
-
-    end
-
-    -- เริ่มทำงานการฟาร์ม เมื่อ Toggle เปิด
-    if _G.Farm then
-        task.spawn(function()
-            while _G.Farm do
-                task.wait(1)  -- เพิ่มเวลาหน่วงเพื่อให้ไม่กระทบกับประสิทธิภาพ
-                -- ฟังก์ชันที่คุณต้องการให้ทำงานเมื่อ Toggle เปิด
-                print("...กำลังฟาร์ม")
-            end
-        end)
     end
 end)
+
+-- ปุ่มเปิด/ปิดการซื้อปูอัตโนมัติ
 local Toggle = Tabs.Farm:AddToggle("MyToggle", {
-    Title = "BuyCrab", 
+    Title = "ซื้อปูอัตโนมัติ", 
     Default = false, 
-    Description = "Auto Buy Crab."
+    Description = "ซื้อปูโดยอัตโนมัติ"
 })
 
--- Add a toggle to the Farm tab
 Toggle:OnChanged(function(state)
     _G.BuyCrab = state
     if state then
-        -- Start the auto-buy process
+        -- เริ่มการซื้อปูอัตโนมัติ
         task.spawn(function()
             while _G.BuyCrab do
-                task.wait(0) -- Prevent overwhelming the system
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2526, 136, -893) 
+                task.wait(0)
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2526, 136, -893)
 
-                -- Simulate pressing the 'E' key
+                -- จำลองการกดปุ่ม 'E'
                 game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
                 game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
                 
-                -- Check for the 'prompt' GUI element
+                -- ตรวจสอบหน้าต่างยืนยัน
                 local playerGui = game:GetService("Players").LocalPlayer.PlayerGui
                 if playerGui:FindFirstChild("over") and playerGui.over:FindFirstChild("prompt") then
                     local prompt = playerGui.over.prompt
                     if prompt:FindFirstChild("confirm") then
-                        -- Trigger the confirmation button
                         for _, connection in pairs(getconnections(prompt.confirm.MouseButton1Click)) do
                             if connection.Function then
                                 connection.Function()
@@ -989,7 +921,6 @@ Toggle:OnChanged(function(state)
         end)
     end
 end)
-
 
 local rodsFarmSection = Tabs.Farm:AddSection("ฟาร์มคันเบ็ด")  -- แสดงเป็นภาษาไทย
 
@@ -1168,12 +1099,11 @@ end)
 
 
 
--- Add a toggle to the Farm tab
+-- ปุ่มเปิด/ปิดความเร็วเดิน
 local Toggle = Tabs.Players:AddToggle("MyToggle", {
-    Title = "Walk Speed", 
-    Default = true, 
+    Title = "ความเร็วในการเดิน", 
     Default = false, 
-    Description = "You can run at high speed."
+    Description = "ทำให้คุณสามารถเดินเร็วขึ้น"
 })
 
 Toggle:OnChanged(function(State)
@@ -1182,8 +1112,6 @@ Toggle:OnChanged(function(State)
     else
         local player = game.Players.LocalPlayer
         local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-        
-        -- รีเซ็ต WalkSpeed เป็น 16 เมื่อปิด
         if humanoid then
             humanoid.WalkSpeed = 16
         end
@@ -1191,23 +1119,18 @@ Toggle:OnChanged(function(State)
     end
 end)
 
-
-
--- Create Slider for adjusting WalkSpeed
+-- แถบเลื่อนสำหรับตั้งค่าความเร็วเดิน
 local Slider = Tabs.Players:AddSlider("Slider", {
-    Title = "WalkSpeed Slider",
-    Description = "Adjust running speed.",
-    Default = 16,  -- Default WalkSpeed (Roblox default is 16)
+    Title = "ความเร็วการเดิน",
+    Description = "ปรับระดับความเร็วในการเดิน",
+    Default = 16, 
     Min = 1,
-    Max = 200,  -- Maximum WalkSpeed (adjustable)
+    Max = 200, 
     Rounding = 1,
     Callback = function(Value)
-        -- ตรวจสอบว่า _G.WalkSpeed เป็น true ก่อนจะอัปเดต WalkSpeed
         if _G.WalkSpeed then
             local player = game.Players.LocalPlayer
             local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-            
-            -- อัปเดต WalkSpeed หาก humanoid มีอยู่
             if humanoid then
                 humanoid.WalkSpeed = Value
             end
@@ -1215,16 +1138,11 @@ local Slider = Tabs.Players:AddSlider("Slider", {
     end
 })
 
-Slider:OnChanged(function(Value)
-    -- Optionally log or do something else when the slider value changes
-    -- print("Slider Value: " .. Value)
-end)
-
+-- ปุ่มเปิด/ปิดพลังการกระโดด
 local Toggle = Tabs.Players:AddToggle("MyToggle", {
-    Title = "Jump Power", 
-    Default = true, 
+    Title = "พลังการกระโดด", 
     Default = false, 
-    Description = "You can jump power."
+    Description = "ปรับระดับพลังการกระโดด"
 })
 
 Toggle:OnChanged(function(State)
@@ -1233,8 +1151,6 @@ Toggle:OnChanged(function(State)
     else
         local player = game.Players.LocalPlayer
         local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-        
-        -- รีเซ็ต WalkSpeed เป็น 16 เมื่อปิด
         if humanoid then
             humanoid.JumpPower = 16
         end
@@ -1242,34 +1158,29 @@ Toggle:OnChanged(function(State)
     end
 end)
 
-
-
+-- แถบเลื่อนสำหรับตั้งค่าพลังการกระโดด
 local Slider = Tabs.Players:AddSlider("Slider", {
-    Title = "Jump Power",
-    Description = "Adjust jump power.",
-    Default = 50,  -- ค่าเริ่มต้นของ JumpPower
+    Title = "พลังการกระโดด",
+    Description = "ปรับระดับพลังในการกระโดด",
+    Default = 50,  
     Min = 1,
-    Max = 500,  -- ความสูงการกระโดดสูงสุด
+    Max = 500,  
     Rounding = 1,
     Callback = function(Value)
-        -- ตรวจสอบว่า _G.JumpPower เป็น true ก่อนจะอัปเดต JumpPower
         if _G.JumpPower then
             local player = game.Players.LocalPlayer
             local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-            
-            -- อัปเดต JumpPower หาก humanoid มีอยู่
             if humanoid then
                 humanoid.JumpPower = Value
             end
         end
     end
 })
-
+-- ปุ่มเปิด/ปิดออกซิเจนไม่จำกัด
 local Toggle = Tabs.Players:AddToggle("MyToggle", {
-    Title = "infinite oxygen", 
-    Default = true, 
+    Title = "ออกซิเจนไม่จำกัด", 
     Default = false, 
-    Description = "You can infinite oxygen."
+    Description = "คุณสามารถมีออกซิเจนไม่จำกัด"
 })
 
 Toggle:OnChanged(function(state)
@@ -1277,274 +1188,193 @@ Toggle:OnChanged(function(state)
     if character and character:FindFirstChild("client") then
         local oxygen = character.client:FindFirstChild("oxygen")
         if oxygen then
-            -- เมื่อ Toggle เปิดให้ปิด oxygen, เมื่อ Toggle ปิดให้เปิด oxygen
-            oxygen.Enabled = not state
+            oxygen.Enabled = not state  -- เปิด/ปิดการใช้งานตาม Toggle
         end
     end
 end)
 
-
+-- ปุ่มเปิด/ปิดออกซิเจนไม่จำกัด (Peaks)
 local Toggle = Tabs.Players:AddToggle("MyToggle", {
-    Title = "Infinite Oxygen (Peaks)",
+    Title = "ออกซิเจนไม่จำกัด (Peaks)",
     Default = false,
-    Description = "You can infinite oxygen(peaks)."
+    Description = "คุณสามารถมีออกซิเจนไม่จำกัดใน Peaks"
 })
 
 Toggle:OnChanged(function(state)
     local player = game.Players.LocalPlayer.Character
     if player and player:FindFirstChild("client") then
-        local oxygenPeaks = player.client:FindFirstChild("oxygen(peaks)") -- ค้นหา "oxygen(peaks)"
+        local oxygenPeaks = player.client:FindFirstChild("oxygen(peaks)")
         if oxygenPeaks then
-            -- เมื่อ Toggle เปิดให้ปิด oxygen, เมื่อ Toggle ปิดให้เปิด oxygen
             oxygenPeaks.Enabled = not state
         end
     end
 end)
 
+-- ปุ่มเปิด/ปิดอุณหภูมิไม่จำกัด
 local Toggle = Tabs.Players:AddToggle("MyToggle", {
-    Title = "Infinite temperature",
+    Title = "อุณหภูมิไม่จำกัด",
     Default = false,
-    Description = "You can infinite temperature."
+    Description = "คุณสามารถมีอุณหภูมิไม่จำกัด"
 })
 
 Toggle:OnChanged(function(state)
-    local player =game.Players.LocalPlayer.Character
+    local player = game.Players.LocalPlayer.Character
     if player and player:FindFirstChild("client") then
-        local temperature = player.client:FindFirstChild("temperature") -- ค้นหา "temperature"
+        local temperature = player.client:FindFirstChild("temperature")
         if temperature then
-            -- เมื่อ Toggle เปิดให้ปิด temperature, เมื่อ Toggle ปิดให้เปิด temperature
             temperature.Enabled = not state
         end
     end
 end)
 
-
-
-
+-- ปุ่มเปิด/ปิดขายอัตโนมัติ
 local Toggle = Tabs.Miscellaneous:AddToggle("MyToggle", {
-    Title = "Auto Sell", 
-    Default = true, 
+    Title = "ขายอัตโนมัติ", 
     Default = false, 
-    Description = "You can auto sell hand."
+    Description = "คุณสามารถขายไอเท็มในมือโดยอัตโนมัติ"
 })
 
-    Toggle:OnChanged(function(ez)
+Toggle:OnChanged(function(ez)
+    _G.Sell = ez
 
-    _G.Sell  = ez
-
-if not _G.Sell then
-    _G.Sell = false  -- กำหนดค่าเริ่มต้นให้เป็น false
-end
-
-task.spawn(function()
-    while true do  -- ลูปแบบต่อเนื่อง
-        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
-
-        if _G.Sell then
-
-game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("Sell"):InvokeServer()
-
-
-
-end
-end
-end)
-
-
-    end)
-    local Toggle = Tabs.Miscellaneous:AddToggle("MyToggle", {
-    Title = "Auto Sell all", 
-    Default = true, 
-    Default = false, 
-    Description = "You can auto sell all."
-})
-
-    Toggle:OnChanged(function(ez1)
-
-    _G.Sell1  = ez1
-
-if not _G.Sell1 then
-    _G.Sell1 = false  -- กำหนดค่าเริ่มต้นให้เป็น false
-end
-
-task.spawn(function()
-    while true do  -- ลูปแบบต่อเนื่อง
-        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
-
-        if _G.Sell1 then
-
-game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("SellAll"):InvokeServer()
-
-
-
-end
-end
-end)
-
-
-    end)
-
-
-
-
-
-    local Toggle = Tabs.Trading:AddToggle("MyToggle", {
-    Title = "Auto Accept Trade", 
-    Default = false, 
-    Description = "Press Accept ltem for the ltems traded by another player."
-})
-
-    Toggle:OnChanged(function(V)
-_G.AutoTrade = V
-
-if not _G.AutoTrade then
-    _G.AutoTrade = false  -- กำหนดค่าเริ่มต้นให้เป็น false
-end
-
-task.spawn(function()
-    while true do  -- ลูปแบบต่อเนื่อง
-        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
-
-        if _G.AutoTrade then
-
-
-
-
-local player = game:GetService("Players").LocalPlayer
-local bodyAnnouncements = player.PlayerGui.hud.safezone:FindFirstChild("bodyannouncements")
-
-if bodyAnnouncements and bodyAnnouncements:FindFirstChild("offer") then
-    local confirmButton = bodyAnnouncements.offer.confirm
-    for _, connection in pairs(getconnections(confirmButton.MouseButton1Click)) do
-        connection.Function(confirmButton)
-    end
-end
-end
-end
-end)
-    end)
-
-
-local Toggle = Tabs.Fake:AddToggle("MyToggle", {Title = "coins up", Default = false })
-
-Toggle:OnChanged(function(e)
-    -- Set the global variable based on toggle state
-    _G.coinsFake = e
-
-    -- Make sure _G.coinsFake defaults to false if it's not already set
-    if not _G.coinsFake then
-        _G.coinsFake = false  -- กำหนดค่าเริ่มต้นให้เป็น false
-    end
-
-    -- Create a new thread to continuously check the toggle state
     task.spawn(function()
-        while true do  -- Loop indefinitely
-            task.wait(0.1)  -- Small delay to avoid performance issues
+        while _G.Sell do
+            task.wait(0)
+            game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("Sell"):InvokeServer()
+        end
+    end)
+end)
 
-            if _G.coinsFake then
-                -- Get the player's coin value
-                local player = game.Players.LocalPlayer
-                local coins = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats"):WaitForChild("coins")
+-- ปุ่มเปิด/ปิดขายทุกอย่างอัตโนมัติ
+local Toggle = Tabs.Miscellaneous:AddToggle("MyToggle", {
+    Title = "ขายทั้งหมดอัตโนมัติ", 
+    Default = false, 
+    Description = "คุณสามารถขายทุกอย่างโดยอัตโนมัติ"
+})
 
-                -- Increment the coin value by 1
-                coins.Value += _G.coinsIncrease
+Toggle:OnChanged(function(ez1)
+    _G.Sell1 = ez1
+
+    task.spawn(function()
+        while _G.Sell1 do
+            task.wait(0)
+            game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("SellAll"):InvokeServer()
+        end
+    end)
+end)
+
+-- ปุ่มเปิด/ปิดยอมรับการแลกเปลี่ยนอัตโนมัติ
+local Toggle = Tabs.Trading:AddToggle("MyToggle", {
+    Title = "ยอมรับการแลกเปลี่ยนอัตโนมัติ", 
+    Default = false, 
+    Description = "กดยอมรับไอเท็มที่แลกโดยผู้เล่นอื่นอัตโนมัติ"
+})
+
+Toggle:OnChanged(function(V)
+    _G.AutoTrade = V
+
+    task.spawn(function()
+        while _G.AutoTrade do
+            task.wait(0)
+            local player = game:GetService("Players").LocalPlayer
+            local bodyAnnouncements = player.PlayerGui.hud.safezone:FindFirstChild("bodyannouncements")
+            if bodyAnnouncements and bodyAnnouncements:FindFirstChild("offer") then
+                local confirmButton = bodyAnnouncements.offer.confirm
+                for _, connection in pairs(getconnections(confirmButton.MouseButton1Click)) do
+                    connection.Function(confirmButton)
+                end
             end
         end
     end)
 end)
 
+-- ปุ่มเปิด/ปิดเพิ่มจำนวนเหรียญ
+local Toggle = Tabs.Fake:AddToggle("MyToggle", {Title = "เพิ่มเหรียญ", Default = false})
 
+Toggle:OnChanged(function(e)
+    _G.coinsFake = e
 
+    task.spawn(function()
+        while _G.coinsFake do
+            task.wait(0.1)
+            local player = game.Players.LocalPlayer
+            local coins = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats"):WaitForChild("coins")
+            coins.Value += _G.coinsIncrease
+        end
+    end)
+end)
 
+-- แถบเลื่อนเพิ่มจำนวนเหรียญ
 local Slider = Tabs.Fake:AddSlider("Slider", {
-    Title = "coins",
+    Title = "จำนวนเหรียญ",
     Description = "",
     Default = 2,
     Min = 1,
     Max = 10000000000,
     Rounding = 1,
     Callback = function(Value)
-        print("Slider was changed:", Value)
-        _G.coinsIncrease = Value  -- อัพเดทค่าการเพิ่ม coins จาก Slider
+        _G.coinsIncrease = Value
     end
 })
 
-
+-- ปุ่มเพิ่มเหรียญ (ไม่ใช่แบบวนซ้ำ)
 Tabs.Fake:AddButton({
-    Title = "coins up",
-    Description = "not loop",
+    Title = "เพิ่มเหรียญ",
+    Description = "เพิ่มเหรียญทันที",
     Callback = function()
-   -- Get the player's coin value
-                local player = game.Players.LocalPlayer
-                local coins = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats"):WaitForChild("coins")
-
-                -- Increment the coin value by 1
-                coins.Value += _G.coinsIncrease
+        local player = game.Players.LocalPlayer
+        local coins = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats"):WaitForChild("coins")
+        coins.Value += _G.coinsIncrease
     end
 })
 
-
-
-local Toggle = Tabs.Fake:AddToggle("MyToggle", {Title = "level up", Default = false })
+-- ปุ่มเปิด/ปิดเพิ่มเลเวล
+local Toggle = Tabs.Fake:AddToggle("MyToggle", {Title = "เพิ่มเลเวล", Default = false})
 
 Toggle:OnChanged(function(e)
-    -- Set the global variable based on toggle state
     _G.levelFake = e
 
-    -- Make sure _G.coinsFake defaults to false if it's not already set
-    if not _G.levelFake then
-        _G.levelFake = false  -- กำหนดค่าเริ่มต้นให้เป็น false
-    end
-
-    -- Create a new thread to continuously check the toggle state
     task.spawn(function()
-        while true do  -- Loop indefinitely
-            task.wait(0.1)  -- Small delay to avoid performance issues
-
-            if _G.levelFake then
-                -- Get the player's coin value
+        while _G.levelFake do
+            task.wait(0.1)
             local player = game.Players.LocalPlayer
-local stats = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats")
-local level = stats:WaitForChild("level")
-
-level.Value += _G.levelIncrease
-
-            end
+            local stats = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats")
+            local level = stats:WaitForChild("level")
+            level.Value += _G.levelIncrease
         end
     end)
 end)
 
-
+-- แถบเลื่อนเพิ่มเลเวล
 local Slider = Tabs.Fake:AddSlider("Slider", {
-    Title = "levelIncrease",
+    Title = "เพิ่มจำนวนเลเวล",
     Description = "",
     Default = 2,
     Min = 1,
     Max = 750,
     Rounding = 1,
     Callback = function(Value)
-        print("Slider was changed:", Value)
-        _G.levelIncrease = Value  -- อัพเดทค่าการเพิ่ม coins จาก Slider
+        _G.levelIncrease = Value
     end
 })
 
+-- ปุ่มเพิ่มเลเวล (ไม่ใช่แบบวนซ้ำ)
 Tabs.Fake:AddButton({
-    Title = "level up",
-    Description = "not loop",
+    Title = "เพิ่มเลเวล",
+    Description = "เพิ่มเลเวลทันที",
     Callback = function()
- local player = game.Players.LocalPlayer
-local stats = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats")
-local level = stats:WaitForChild("level")
-
-level.Value += _G.levelIncrease
+        local player = game.Players.LocalPlayer
+        local stats = game:GetService("ReplicatedStorage"):WaitForChild("playerstats"):WaitForChild(player.Name):WaitForChild("Stats")
+        local level = stats:WaitForChild("level")
+        level.Value += _G.levelIncrease
     end
 })
 
-
-    local Toggle = Tabs.Trading:AddToggle("MyToggle", {
-    Title = "No Trade Cooldown", 
+-- ปุ่มเปิด/ปิดไม่มีคูลดาวน์แลกเปลี่ยน
+local Toggle = Tabs.Trading:AddToggle("MyToggle", {
+    Title = "ไม่มีคูลดาวน์การแลกเปลี่ยน", 
     Default = false, 
-    Description = "Trade with other player will have no cooldown."
+    Description = "แลกเปลี่ยนกับผู้เล่นคนอื่นได้โดยไม่มีคูลดาวน์"
 })
 
 Toggle:OnChanged(function(value)
@@ -1552,14 +1382,14 @@ Toggle:OnChanged(function(value)
         if playerModel:FindFirstChild("TradeOffer") then
             local tradeOffer = playerModel.TradeOffer
             if value then
-                tradeOffer.HoldDuration = 0 -- เมื่อเปิด Toggle ตั้งเป็น 0 วินาที
+                tradeOffer.HoldDuration = 0 -- ปิดคูลดาวน์
             else
-                tradeOffer.HoldDuration = 3 -- เมื่อปิด Toggle ตั้งเป็น 3 วินาที
+                tradeOffer.HoldDuration = 3 -- เปิดคูลดาวน์ 3 วินาที
             end
         end
     end
 end)
-local Backpack = game:GetService("Players").LocalPlayer.Backpack
+local Backpack = game:GetService("Players").LocalPlayer.Backpack 
 local itemNames = {}
 local itemCounts = {}
 
@@ -1575,10 +1405,11 @@ for _, item in ipairs(Backpack:GetChildren()) do
         end
     end
 end
--- สร้าง Dropdown
+
+-- สร้าง Dropdown แสดงผลชื่อไทย
 local Dropdown = Tabs.Trading:AddDropdown("Dropdown", {
-    Title = "Item Selector",
-    Values = itemNames, -- ใช้ชื่อไอเท็มจาก Backpack
+    Title = "เลือกไอเท็ม",  -- แสดงผลเป็นภาษาไทย
+    Values = itemNames,      -- ใช้ชื่อไอเท็มจาก Backpack
     Multi = false,
     Default = 1,
 })
@@ -1601,193 +1432,168 @@ Dropdown:OnChanged(function(Value)
     end
 end)
 
-function Rejoin_Server()
-    local TeleportService = game:GetService("TeleportService")
+-- ปุ่มเข้าสู่เซิร์ฟเวอร์เดิม
+Tabs.Server:AddButton({
+    Title = "กลับเข้าเซิร์ฟเวอร์เดิม",
+    Description = "เข้าสู่เซิร์ฟเวอร์ที่คุณอยู่ตอนนี้อีกครั้ง",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
         TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
-end
-function   Hop_Server()
-local HttpService = game:GetService("HttpService")
-local TeleportService = game:GetService("TeleportService")
-local Players = game:GetService("Players")
-
-local PlaceId = game.PlaceId -- กำหนดค่า PlaceId
-local JobId = game.JobId -- กำหนดค่า JobId ปัจจุบัน
-
-local function notify(title, message)
-    game.StarterGui:SetCore("SendNotification", {
-        Title = title;
-        Text = message;
-        Duration = 5;
-    })
-end
-
-local function httpRequest(request)
-    if syn and syn.request then
-        return syn.request(request)
-    elseif request and http and http.request then
-        return http.request(request)
-    else
-        return nil
     end
-end
+})
 
-if httpRequest then
-    local servers = {}
-    local req = httpRequest({
-        Url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", PlaceId),
-        Method = "GET"
-    })
+-- ปุ่มเปลี่ยนเซิร์ฟเวอร์ใหม่
+Tabs.Server:AddButton({
+    Title = "เปลี่ยนเซิร์ฟเวอร์ใหม่",
+    Description = "ค้นหาเซิร์ฟเวอร์ใหม่ที่มีที่ว่าง",
+    Callback = function()
+        local HttpService = game:GetService("HttpService")
+        local TeleportService = game:GetService("TeleportService")
+        local Players = game:GetService("Players")
+        local PlaceId = game.PlaceId
 
-    if req and req.Body then
-        local body = HttpService:JSONDecode(req.Body)
+        local function notify(title, message)
+            game.StarterGui:SetCore("SendNotification", {
+                Title = title;
+                Text = message;
+                Duration = 5;
+            })
+        end
 
-        if body and body.data then
-            for _, v in ipairs(body.data) do
-                if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= JobId then
-                    table.insert(servers, v.id)
+        local servers = {}
+        local req = http and http.request({
+            Url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", PlaceId),
+            Method = "GET"
+        })
+
+        if req and req.Body then
+            local body = HttpService:JSONDecode(req.Body)
+            if body and body.data then
+                for _, v in ipairs(body.data) do
+                    if type(v) == "table" and tonumber(v.playing) and v.playing < v.maxPlayers and v.id ~= game.JobId then
+                        table.insert(servers, v.id)
+                    end
                 end
             end
         end
-    end
 
-    if #servers > 0 then
-        local serverId = servers[math.random(1, #servers)]
-        TeleportService:TeleportToPlaceInstance(PlaceId, serverId, Players.LocalPlayer)
-    else
-        notify("Serverhop", "Couldn't find a server.")
-    end
-else
-    notify("Incompatible Exploit", "Your exploit does not support this command (missing request)")
-end
-end
-
-Tabs.Server:AddButton({
-    Title = "Rejoin Server",
-    Description = "",
-    Callback = function()
-        Rejoin_Server()
+        if #servers > 0 then
+            TeleportService:TeleportToPlaceInstance(PlaceId, servers[math.random(1, #servers)], Players.LocalPlayer)
+        else
+            notify("เปลี่ยนเซิร์ฟเวอร์", "ไม่พบเซิร์ฟเวอร์ใหม่")
+        end
     end
 })
 
-Tabs.Server:AddButton({
-    Title = "Hop Server",
-    Description = "",
-    Callback = function()
-        Hop_Server()
-    end
-})
-local section = Tabs.Server:AddSection("Server id")
+local section = Tabs.Server:AddSection("รหัสเซิร์ฟเวอร์")
 
 local JobIDInput = Tabs.Server:AddInput("JobIDInput", {
-    Title = "Enter Job ID",
+    Title = "ใส่รหัสเซิร์ฟเวอร์",
     Default = "",
-    Placeholder = "Enter Job ID here...",
-    Numeric = false, -- อนุญาตตัวเลขและข้อความ
-    Finished = false, -- Callback จะถูกเรียกทุกครั้งที่พิมพ์
-    Callback = function(Value)
-    end
+    Placeholder = "ป้อนรหัสเซิร์ฟเวอร์ที่นี่...",
+    Numeric = false, 
+    Finished = false, 
 })
 
--- ตรวจจับการเปลี่ยนแปลงใน Input
-JobIDInput:OnChanged(function()
-end)
-
--- เพิ่ม Toggle เพื่อควบคุมการใช้งาน
 local JoinServerToggle = Tabs.Server:AddToggle("JoinServerToggle", {
-    Title = "Enable Join by Job ID",
-    Default = false, -- ค่าเริ่มต้นของ Toggle
-    Description = "enable joining the server Job ID."
+    Title = "เปิดใช้งานเข้าร่วมด้วยรหัสเซิร์ฟเวอร์",
+    Default = false, 
 })
 
--- เมื่อ Toggle ถูกเปลี่ยน
 JoinServerToggle:OnChanged(function(Value)
     if Value then
         local jobId = JobIDInput.Value
         if jobId and jobId ~= "" then
-            local TeleportService = game:GetService("TeleportService")
-            local Players = game:GetService("Players")
-            -- ใช้ TeleportService สำหรับเชื่อมต่อเซิร์ฟเวอร์
-            TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, Players.LocalPlayer)
+            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobId, game.Players.LocalPlayer)
         end
     end
 end)
 
 Tabs.Server:AddButton({
-    Title = "Copy Job ID",
-    Description = "Copy server Job ID",
+    Title = "คัดลอกรหัสเซิร์ฟเวอร์",
+    Description = "คัดลอกรหัสเซิร์ฟเวอร์ไปยังคลิปบอร์ด",
     Callback = function()
-        local jobId = game.JobId
-
-        -- คัดลอก Job ID ไปยังคลิปบอร์ด
         if setclipboard then
-            setclipboard(jobId)
-   end
-end
-
+            setclipboard(game.JobId)
+        end
+    end
 })
-local paragraphs = {
-    Megalodon = Tabs.Event:AddParagraph({ Title = "Megalodon : Initializing...", Content = "" }),
-    Isonade = Tabs.Event:AddParagraph({ Title = "Isonade : Initializing...", Content = "" })
+
+local fishStatus = {
+    ["Megalodon Default"] = "❌",
+    ["Isonade"] = "❌",
+    ["Serpent"] = "❌",
+    ["WhiteShark"] = "❌",
+    ["WhaleShark"] = "❌",
+    ["HammerShark"] = "❌"
 }
 
-local function updateFishStatus(fishName)
+local paragraphs = {}
+
+-- สร้าง Paragraph สำหรับปลาแต่ละตัว
+for fishName, _ in pairs(fishStatus) do
+    paragraphs[fishName] = Tabs.Event:AddParagraph({
+        Title = fishName .. " : Initializing...",
+        Content = ""
+    })
+end
+
+-- ฟังก์ชันอัพเดตสถานะของปลา
+local function updateFishStatus()
     pcall(function()
         while true do
-            -- ตรวจสอบการมีอยู่ของปลา
-            if workspace.zones.fishing:FindFirstChild(fishName) then
-                paragraphs[fishName]:SetTitle(fishName .. " : ✅") -- แสดงสถานะว่าปลาพบ
-            else
-                paragraphs[fishName]:SetTitle(fishName .. " : ❌") -- แสดงสถานะว่าปลาไม่พบ
+            for fishName, _ in pairs(fishStatus) do
+                -- ตรวจสอบการมีอยู่ของปลาใน workspace
+                if workspace.zones.fishing:FindFirstChild(fishName) then
+                    fishStatus[fishName] = "✅"
+                else
+                    fishStatus[fishName] = "❌"
+                end
+                -- อัปเดต Paragraph
+                paragraphs[fishName]:SetTitle(fishName .. " : " .. fishStatus[fishName])
             end
             task.wait(0.5) -- อัพเดตทุก 0.5 วินาที
         end
     end)
 end
 
--- เรียกใช้งานฟังก์ชันสำหรับปลาแต่ละตัว
-for fishName, _ in pairs(paragraphs) do
-    task.spawn(function()
-        updateFishStatus(fishName)
-    end)
-end
+-- เรียกใช้งานฟังก์ชันอัพเดตสถานะ
+task.spawn(updateFishStatus)
 
- -- Dropdown สำหรับเลือก Event
+
 local Dropdown = Tabs.Event:AddDropdown("Dropdown", {
-    Title = "Teleport Event",
+    Title = "เลือกกิจกรรม",  -- เปลี่ยนชื่อเป็นภาษาไทย
     Values = {"Isonade", "Megalodon Default"},
     Multi = false,
     Default = 1,
 })
 
 Dropdown:SetValue("Isonade")
-Dropdown:SetValue("Megalodon Default")
 
 Dropdown:OnChanged(function(Value)
     _G.Event = Value
 end)
-local running = false -- ตัวแปรควบคุมลูป
-local createdPart -- ตัวแปรเก็บ Part ที่สร้าง
+
+local running = false
+local createdPart
 
 local Toggle = Tabs.Event:AddToggle("MyToggle", {
-    Title = "Teleport To Event", 
-    Default = false, 
-    Description = "teleport to event."
+    Title = "เทเลพอร์ตไปยังกิจกรรม", -- เปลี่ยนชื่อเป็นภาษาไทย
+    Default = false,
+    Description = "เคลื่อนย้ายไปยังกิจกรรมที่เลือก"
 })
 
 Toggle:OnChanged(function(ToggleState)
-    running = ToggleState -- อัพเดตสถานะการทำงาน
+    running = ToggleState
 
     if not running and createdPart then
-        -- ลบ Part เมื่อปิด Toggle
         createdPart:Destroy()
         createdPart = nil
     end
 
-    -- สร้างฟังก์ชันทำงานใน background
     spawn(function()
         while running and task.wait() do
             pcall(function()
-                -- ตรวจสอบสถานะอีกครั้ง
                 if running then
                     local target = workspace.zones.fishing:FindFirstChild(_G.Event)
                     if target then
@@ -1795,28 +1601,24 @@ Toggle:OnChanged(function(ToggleState)
                         local character = player.Character or player.CharacterAdded:Wait()
                         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-                        -- Teleport the player to 20 studs above the target
                         humanoidRootPart.CFrame = target.CFrame + Vector3.new(0, 120, 0)
 
-                        -- ตรวจสอบว่ามีบล็อกเดิมอยู่หรือไม่ หากมีให้ลบก่อน
                         if createdPart then
                             createdPart:Destroy()
                             createdPart = nil
                         end
 
-                        -- สร้างบล็อกสายรุ้งใหม่เหนือเป้าหมาย
                         createdPart = Instance.new("Part")
-                        createdPart.Name = _G.Event .. "Block" -- ตั้งชื่อบล็อกตาม Event ที่เลือก
-                        createdPart.Size = Vector3.new(15, 0, 15) -- ขนาดของบล็อก
-                        createdPart.Position = target.Position + Vector3.new(0, 117, 0) -- วางบล็อกเหนือเป้าหมาย
-                        createdPart.Anchored = true -- ทำให้บล็อกไม่เคลื่อนไหว
-                        createdPart.Parent = workspace -- เพิ่มบล็อกเข้า workspace
+                        createdPart.Name = _G.Event .. "Block"
+                        createdPart.Size = Vector3.new(15, 0, 15)
+                        createdPart.Position = target.Position + Vector3.new(0, 117, 0)
+                        createdPart.Anchored = true
+                        createdPart.Parent = workspace
 
-                        -- เพิ่มฟังก์ชันเปลี่ยนสีสายรุ้ง
                         spawn(function()
                             while createdPart and createdPart.Parent and task.wait(0.1) do
-                                local hue = tick() % 5 / 5 -- ใช้ tick() เพื่อวนค่าระหว่าง 0 ถึง 1
-                                createdPart.Color = Color3.fromHSV(hue, 1, 1) -- เปลี่ยนสีตามค่า HSV
+                                local hue = tick() % 5 / 5
+                                createdPart.Color = Color3.fromHSV(hue, 1, 1)
                             end
                         end)
                     end
@@ -1826,12 +1628,12 @@ Toggle:OnChanged(function(ToggleState)
     end)
 end)
 
-local section = Tabs.Event:AddSection("Megalodon Farm")
+local section = Tabs.Event:AddSection("ฟาร์มเมกะโลดอน")  -- แสดงเป็นภาษาไทย
 
 local Toggle = Tabs.Event:AddToggle("AutoMegalodonEvent", {
-    Title = "Auto Megalodon Event",
+    Title = "ฟาร์มเมกะโลดอนอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically search for the Megalodon Event by continuously using the Sundial Totem."
+    Description = "ค้นหากิจกรรมเมกะโลดอนโดยอัตโนมัติโดยใช้โทเท็มซันไดอัลอย่างต่อเนื่อง."
 })
   Toggle:OnChanged(function(v)
 
@@ -1852,10 +1654,11 @@ _G.Rod = false
 end)
 
 local Toggle = Tabs.Event:AddToggle("AutoBuySundialTotem", {
-    Title = "Auto Buy Sundial Totem",
+    Title = "ซื้อโทเท็มซันไดอัลอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically purchase a Sundial Totem when it runs out."
+    Description = "ซื้อโทเท็มซันไดอัลโดยอัตโนมัติเมื่อหมด."
 })
+
 
     Toggle:OnChanged(function(v)
 
@@ -2050,64 +1853,63 @@ end
 end)
 
 
-  local section = Tabs.Enchant:AddSection("Enchant Relic")
+
+
+
+
+
+local section = Tabs.Enchant:AddSection("เลือก Relic")
+
 local Dropdown = Tabs.Enchant:AddDropdown("Dropdown", {
-    Title = "Dropdown",
+    Title = "เลือก Relic",
     Values = {"Lucky", "Storming", "Mutated", "Noir", "Quality", "Resilient", "Scrapper", "Sea King", "Steady", "Swift", "Unbreakable", "Wormhole", "Abyssal", "Blessed", "Breezed", "Clever", "Controlled", "Divine", "Ghastly", "Hasty", "Insight", "Long"},
     Multi = false,
     Default = 1,
 })
 
-Dropdown:SetValue("Lucke") -- กำหนดค่าเริ่มต้น
+Dropdown:SetValue("Lucky")
 
 Dropdown:OnChanged(function(Value)
-    _G.enchant = Value -- เก็บค่า Enchant ที่เลือกไว้ใน `_G.enchant`
+    _G.enchant = Value
 end)
 
-_G.EnchantActive = false -- ตัวแปรสำหรับควบคุม Loop
+_G.EnchantActive = false
 
 function tp(x, y, z)
-    local player = game.Players.LocalPlayer -- อ้างอิงผู้เล่นปัจจุบัน
+    local player = game.Players.LocalPlayer
     if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        player.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(x, y, z)) -- เทเลพอร์ตไปยังตำแหน่งที่กำหนด
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(x, y, z))
     else
         warn("ไม่พบตัวละครหรือ HumanoidRootPart")
     end
 end
 
 function Relic()
-local player = game:GetService("Players").LocalPlayer
-local backpack = player:WaitForChild("Backpack")
+    local player = game:GetService("Players").LocalPlayer
+    local backpack = player:WaitForChild("Backpack")
 
--- Loop เพื่อเช็คไอเทมใน Backpack
-for _, item in pairs(backpack:GetChildren()) do
-    if string.find(item.Name, "Relic") and item.Name ~= "Exalted Relic" then
-        -- หากต้องการถือไอเทมนี้
-        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid:EquipTool(item)
+    for _, item in pairs(backpack:GetChildren()) do
+        if string.find(item.Name, "Relic") and item.Name ~= "Exalted Relic" then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid:EquipTool(item)
+            end
+            break
         end
-        break
     end
-end
 end
 
 function E()
-				game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
-                task.wait(2)
-				game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
+    game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
+    task.wait(2)
+    game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
 end
 
 function confirm()
     local playerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-    
-    -- Check if the GUI element "over" and its children exist
     if playerGui:FindFirstChild("over") and playerGui.over:FindFirstChild("prompt") then
         local prompt = playerGui.over.prompt
-        
-        -- Check if the "confirm" button exists
         if prompt:FindFirstChild("confirm") then
-            -- Trigger the "MouseButton1Click" event for the confirmation button
             for _, connection in pairs(getconnections(prompt.confirm.MouseButton1Click)) do
                 if connection.Function then
                     connection.Function()
@@ -2118,44 +1920,32 @@ function confirm()
 end
 
 function buy()
--- รันฟังก์ชัน InvokeServer ของ Merlin
-local merlinPower = workspace.world.npcs.Merlin.Merlin.power
-
-if merlinPower and merlinPower.InvokeServer then
-    local success, result = pcall(function()
-        return merlinPower:InvokeServer()
-    end)
-
-    if success then
-
+    local merlinPower = workspace.world.npcs.Merlin.Merlin.power
+    if merlinPower and merlinPower.InvokeServer then
+        local success, result = pcall(function()
+            return merlinPower:InvokeServer()
+        end)
     end
 end
-end
-
 
 _G.AllRelic = false
+
 spawn(function()
     while task.wait(2) do
         pcall(function()
             if _G.AllRelic then
-
-        tp(1311, -802, -83)
-        E()
-        Relic()
-        confirm()
-
-
+                tp(1311, -802, -83)
+                E()
+                Relic()
+                confirm()
             end
         end)
     end
 end)
-
-
-
 local Toggle = Tabs.Enchant:AddToggle("MyToggle", {
-    Title = "Auto Enchant",
+    Title = "เปิดใช้งานการเสริมพลังอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Enchant.",
+    Description = "เสริมพลังไอเท็มอัตโนมัติ",
 })
 
 Toggle:OnChanged(function(v)
@@ -2172,22 +1962,18 @@ Toggle:OnChanged(function(v)
 
                     for _, item in pairs(backpack:GetChildren()) do
                         if string.find(item.Name, "Rod") then
-                            
-                            -- เข้าถึง GUI โดยใช้ชื่อของไอเท็ม
                             local enchantPath = player.PlayerGui:WaitForChild("hud")
                                 :WaitForChild("safezone")
                                 :WaitForChild("equipment")
                                 :WaitForChild("rods")
                                 :WaitForChild("scroll")
                                 :WaitForChild("safezone")
-                                :FindFirstChild(item.Name) -- ตรวจสอบ GUI สำหรับไอเท็มที่มีชื่อเดียวกัน
+                                :FindFirstChild(item.Name)
 
                             if enchantPath and enchantPath:FindFirstChild("enchant") then
                                 local enchantValue = enchantPath.enchant.ContentText
                                 if string.find(enchantValue, _G.enchant) then
-                                    
-                                    -- โค้ดสำหรับเทเลพอร์ตหรือทำงานอื่น
-                                    _G.AllRelic = false -- ตัวอย่างการเทเลพอร์ต
+                                    _G.AllRelic = false
                                 end
                             end
                         end
@@ -2198,11 +1984,10 @@ Toggle:OnChanged(function(v)
     end
 end)
 
-
 local Toggle = Tabs.Enchant:AddToggle("MyToggle", {
-    Title = "Auto Buy Enchant Relic",
+    Title = "ซื้อไอเท็มเสริมพลังอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "buy enchant relic.",
+    Description = "ซื้อไอเท็มเสริมพลังอัตโนมัติ",
 })
 
 Toggle:OnChanged(function(v)
@@ -2211,34 +1996,29 @@ Toggle:OnChanged(function(v)
         while task.wait(0.5) do
             pcall(function()
                 if _G.BuyRelic then
-
-                tp(-932, 226, -991)
-                buy()
-
+                    tp(-932, 226, -991)
+                    buy()
                 end
             end)
         end
     end)
 end)
--- ตัวเลือกสำหรับการตั้งค่า UI (Theme)
+
 local Dropdown = Tabs.Settings:AddDropdown("Dropdown", {
-    Title = "Theme Ui",
+    Title = "ธีมของอินเทอร์เฟซ",  -- แสดงเป็นภาษาไทย
     Values = { "Dark", "Darker", "Light", "Aqua", "Amethyst", "Rose" },
     Multi = false,
     Default = "Dark",
 })
 
--- เปลี่ยนธีมตามค่าที่เลือก
 Dropdown:OnChanged(function(Value)
     Fluent:SetTheme(Value)
 end)
 
--- ตั้งค่าเริ่มต้นให้เป็นธีม "Dark"
 Dropdown:SetValue("Aqua")
 
-
 local Slider = Tabs.Settings:AddSlider("Slider", {
-    Title = "Fps",
+    Title = "ตั้งค่าเฟรมเรต",  -- แสดงเป็นภาษาไทย
     Description = "",
     Default = 500,
     Min = 0,
@@ -2249,14 +2029,15 @@ local Slider = Tabs.Settings:AddSlider("Slider", {
     end
 })
 
-local section = Tabs.Shop:AddSection("Buy Rods")
+
+local section = Tabs.Shop:AddSection("ซื้อคันเบ็ด")  -- แสดงเป็นภาษาไทย
+
 local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
     Title = "Selector Rods",
     Values = { 
         "Long Rod [4500C$]", 
         "Fortune Rod [12750C$]", 
         "Aurora Rod [90000C$]", 
-        "Midas Rod [55000C$]", 
         "Steady Rod [7000C$]", 
         "Rod Of The Depths [75000C$]", 
         "Training Rod [300C$]", 
@@ -2268,9 +2049,7 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
         "Rapid Rod [14000C$]", 
         "Flimsy Rod [0C$]", 
         "Fast Rod [4500C$]", 
-        "Firework Rod [35000C$]", 
         "Scurvy Rod [50000C$]", 
-        "Mythical Rod [110000C$]", 
         "Kings Rod [120000C$]", 
         "Carbon Rod [2000C$]", 
         "Summit Rod [300000C$]", 
@@ -2287,18 +2066,17 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
     Multi = false,
     Default = "Long Rod [4500C$]" -- ต้องให้ค่าตรงกับ Values
 })
-
 -- กำหนดค่าเริ่มต้นให้กับตัวเลือก
 Dropdown:SetValue("Long Rod [4500C$]")
 
 -- ฟังก์ชันอัพเดตค่า Dropdown เมื่อมีการเปลี่ยนแปลง
-Dropdown:OnChanged(function(selected1)
-    _G.SelectRod = selected1 -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
+Dropdown:OnChanged(function(selected)
+    _G.SelectIsland = selected -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
 end)
 
 Tabs.Shop:AddButton({
-    Title = "Buy Rod",
-    Description = "Buy selector rod.",
+    Title = "ซื้อคันเบ็ด",  -- แสดงเป็นภาษาไทย
+    Description = "ซื้อคันเบ็ดที่เลือก",
     Callback = function()
         local teleportPositions = {
             ["Long Rod [4500C$]"] = CFrame.new(482.74, 174.50, 148.02),
@@ -2329,8 +2107,8 @@ Tabs.Shop:AddButton({
             ["Stone Rod [3000C$]"] = CFrame.new(5502.51, 146.77, -313.90),
             ["Lucky Rod [5250C$]"] = CFrame.new(445.53, 152.93, 221.11),
         }
-    if _G.SelectRod then
-            local targetPosition = teleportPositions[_G.SelectRod]
+    if _G.SelectIsland then
+            local targetPosition = teleportPositions[_G.SelectIsland]
             if targetPosition then
                 -- เก็บตำแหน่งปัจจุบันก่อนวาร์ป
                 local currentPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
@@ -2370,9 +2148,11 @@ Tabs.Shop:AddButton({
 })
 
 
-local section = Tabs.Shop:AddSection("Buy Totem")
+
+local section = Tabs.Shop:AddSection("ซื้อโทเท็ม")  -- แสดงเป็นภาษาไทย
+
 local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
-    Title = "Selector Totem",
+    Title = "เลือกโทเท็ม",  -- แสดงเป็นภาษาไทย
     Values = { 
         "Sundial Totem [2000C$]", 			
         "Smokescreen Totem [2000$]", 
@@ -2394,8 +2174,8 @@ Dropdown:OnChanged(function(selected2)
     _G.SelectTotem = selected2 -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
 end)
 Tabs.Shop:AddButton({
-    Title = "Buy Totem",
-    Description = "Buy selector totem.",
+    Title = "ซื้อโทเท็ม",  -- แสดงเป็นภาษาไทย
+    Description = "ซื้อโทเท็มที่เลือก",
     Callback = function()
         local teleportPositions = {
             ["Sundial Totem [2000C$]"] = CFrame.new(-1147.37671, 134.5, -1074.64368),
@@ -2451,7 +2231,7 @@ Tabs.Shop:AddButton({
 
 -- ส่วนของ Input ที่รับค่าจำนวนรอบ
 Tabs.Shop:AddInput("Input", {
-    Title = "Totem Amount",
+    Title = "จำนวนโทเท็ม",
     Default = "5",  -- ค่าดีฟอลต์
     Placeholder = "",
     Numeric = true,
@@ -2461,27 +2241,27 @@ Tabs.Shop:AddInput("Input", {
     end
 })
 
-local SavedPositions = {}
 
+local SavedPositions = {}
 
 -- ช่องป้อนชื่อไฟล์
 local FileInput = Tabs.file:AddInput("FileNameInput", {
-    Title = "Enter Name File",  -- แสดงเป็นภาษาไทย
+    Title = "ป้อนชื่อไฟล์",  -- แสดงเป็นภาษาไทย
     Default = "",
-    Placeholder = "",
+    Placeholder = "พิมพ์ที่นี่...",
     Numeric = false,
     Finished = true -- กด Enter เพื่อบันทึกค่า
 })
 
--- Dropdown for selecting files
+-- เมนูแบบดรอปดาวน์สำหรับเลือกไฟล์
 local Dropdown = Tabs.file:AddDropdown("FileDropdown", {
-    Title = "Select File",
+    Title = "เลือกไฟล์",  -- แสดงเป็นภาษาไทย
     Values = {},
     Multi = false,
     Default = nil
 })
 
--- Function to update Dropdown values
+-- ฟังก์ชันอัปเดตรายการไฟล์ใน Dropdown
 local function updateDropdown()
     local fileNames = {}
     for name, _ in pairs(SavedPositions) do
@@ -2490,16 +2270,17 @@ local function updateDropdown()
     Dropdown:SetValues(fileNames)
 end
 
--- Add new filename when pressing Enter
+-- เพิ่มชื่อไฟล์ใหม่เมื่อกด Enter
 FileInput:OnChanged(function(Value)
     if Value and Value ~= "" and not SavedPositions[Value] then
         SavedPositions[Value] = {x = 0, y = 0, z = 0}
         updateDropdown()
     end
 end)
--- Button to set current position
+
+-- ปุ่มบันทึกตำแหน่งปัจจุบัน
 Tabs.file:AddButton({
-    Title = "SetCF",
+    Title = "บันทึกตำแหน่ง",  -- แสดงเป็นภาษาไทย
     Callback = function()
         local selectedFile = Dropdown.Value
         if selectedFile and SavedPositions[selectedFile] then
@@ -2512,9 +2293,9 @@ Tabs.file:AddButton({
     end
 })
 
--- Button to teleport to saved position
+-- ปุ่มเทเลพอร์ตไปยังตำแหน่งที่บันทึกไว้
 Tabs.file:AddButton({
-    Title = "Teleport",
+    Title = "เทเลพอร์ต",  -- แสดงเป็นภาษาไทย
     Callback = function()
         local selectedFile = Dropdown.Value
         if selectedFile and SavedPositions[selectedFile] then
@@ -2527,87 +2308,18 @@ Tabs.file:AddButton({
     end
 })
 
--- Button to delete the selected file from the dropdown
+-- ปุ่มลบไฟล์ที่เลือกออกจากรายการ
 Tabs.file:AddButton({
-    Title = "Delete File All",
+    Title = "ลบไฟล์ทั้งหมด",  -- แสดงเป็นภาษาไทย
     Callback = function()
         local selectedFile = Dropdown.Value
         if selectedFile and SavedPositions[selectedFile] then
-            SavedPositions[selectedFile] = nil -- Remove the selected file from the table
-            updateDropdown() -- Update the dropdown list
-            print("Deleted file:", selectedFile)
-            Dropdown:SetValue(nil) -- Clear the dropdown selection
+            SavedPositions[selectedFile] = nil -- ลบไฟล์ที่เลือกจากตาราง
+            updateDropdown() -- อัปเดตรายการดรอปดาวน์
+            Dropdown:SetValue(nil) -- ล้างค่าใน Dropdown
         end
     end
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
