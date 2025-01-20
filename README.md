@@ -2,6 +2,9 @@
 
 
 
+setfpscap(1)
+wait(5)
+setfpscap(999)
 
 
 
@@ -988,37 +991,38 @@ Toggle:OnChanged(function(state)
 end)
 
 
-local rodsFarmSection = Tabs.Farm:AddSection("Rods Farm")
+local rodsFarmSection = Tabs.Farm:AddSection("ฟาร์มคันเบ็ด")  -- แสดงเป็นภาษาไทย
 
 local AutoTridentRod = rodsFarmSection:AddToggle("AutoTridentRod", {
-    Title = "Auto Trident Rod",
+    Title = "ฟาร์มไตรเดนท์อัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = _G.Toggle,
-    Description = "Automatically enables trident rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดไตรเดนท์โดยอัตโนมัติ"
 })
 
 local AutoAuroraRod = rodsFarmSection:AddToggle("AutoAuroraRod", {
-    Title = "Auto Aurora Rod",
+    Title = "ฟาร์มออโรร่าอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables aurora rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดออโรร่าโดยอัตโนมัติ"
 })
 
 local AutoKingsRod = rodsFarmSection:AddToggle("AutoKingsRod", {
-    Title = "Auto Kings Rod",
+    Title = "ฟาร์มคิงส์อัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables kings rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดคิงส์โดยอัตโนมัติ"
 })
 
 local AutoDestinyRod = rodsFarmSection:AddToggle("AutoDestinyRod", {
-    Title = "Auto Destiny Rod",
+    Title = "ฟาร์มเดสทินีอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables destiny rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดเดสทินีโดยอัตโนมัติ"
 })
 
 local AutoMythicalRod = rodsFarmSection:AddToggle("AutoMythicalRod", {
-    Title = "Auto Mythical Rod",
+    Title = "ฟาร์มมิธิคอลอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables mythical rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดมิธิคอลโดยอัตโนมัติ"
 })
+
 
 function buy1()
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-932, 226, -991)
@@ -1160,35 +1164,6 @@ AutoTridentRod:OnChanged(function(value)
             end
         end
     end
-end)
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-AutoAuroraRod:OnChanged(function(value)
-    print("Auto Aurora Rod: " .. tostring(value))
-end)
-
-AutoKingsRod:OnChanged(function(value)
-    print("Auto Kings Rod: " .. tostring(value))
-end)
-
-AutoDestinyRod:OnChanged(function(value)
-    print("Auto Destiny Rod: " .. tostring(value))
-end)
-
-AutoMythicalRod:OnChanged(function(value)
-    print("Auto Mythical Rod: " .. tostring(value))
 end)
 
 
